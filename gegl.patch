@@ -1,0 +1,98 @@
+diff --git a/meson.build b/meson.build
+index 1b3246deb..a24ffffff 100644
+--- a/meson.build
++++ b/meson.build
+@@ -325,17 +325,17 @@ rootInclude = include_directories('.')
+ argvs_extract = find_program('tools/argvs_extract.sh')
+ 
+ subdir('libs/rgbe')
+-subdir('opencl')
+ subdir('gegl')
+-subdir('libs/npd')
+-subdir('seamless-clone')
+ subdir('bin')
++subdir('opencl')
++subdir('seamless-clone')
+ subdir('tools')
++subdir('libs/npd')
+ subdir('operations')
+-subdir('examples')
+-subdir('tests')
+-subdir('perf')
+-subdir('po')
++subproject('poly2tri-c')
++#subdir('perf')
++#subdir('examples')
++#subdir('tests')
+ if get_option('docs')
+   subdir('docs')
+ endif
+diff --git a/seamless-clone/sc-common.h b/seamless-clone/sc-common.h
+index 976607c07..5df9ff8ae 100644
+--- a/seamless-clone/sc-common.h
++++ b/seamless-clone/sc-common.h
+@@ -20,7 +20,7 @@
+ #ifndef __GEGL_SC_COMMON_H__
+ #define __GEGL_SC_COMMON_H__
+ 
+-#include <poly2tri-c/refine/refine.h>
++#include <subprojects/poly2tri-c/poly2tri-c/refine/refine.h>
+ #include <gegl.h>
+ 
+ /**
+diff --git a/seamless-clone/sc-sample.c b/seamless-clone/sc-sample.c
+index cf3fab380..aa80356df 100644
+--- a/seamless-clone/sc-sample.c
++++ b/seamless-clone/sc-sample.c
+@@ -24,7 +24,7 @@
+  */
+ 
+ #include <glib.h>
+-#include <poly2tri-c/refine/refine.h>
++#include <subprojects/poly2tri-c/poly2tri-c/refine/refine.h>
+ 
+ #include "sc-outline.h"
+ #include "sc-sample.h"
+diff --git a/seamless-clone/sc-sample.h b/seamless-clone/sc-sample.h
+index b401ccace..758704046 100644
+--- a/seamless-clone/sc-sample.h
++++ b/seamless-clone/sc-sample.h
+@@ -21,7 +21,7 @@
+ #define __GEGL_SC_SAMPLE_H__
+ 
+ #include <glib.h>
+-#include <poly2tri-c/refine/refine.h>
++#include <subprojects/poly2tri-c/poly2tri-c/refine/refine.h>
+ 
+ #include "sc-outline.h"
+ 
+diff --git a/subprojects/poly2tri-c/meson.build b/subprojects/poly2tri-c/meson.build
+index 280275235..6afb46dd4 100644
+--- a/subprojects/poly2tri-c/meson.build
++++ b/subprojects/poly2tri-c/meson.build
+@@ -19,11 +19,10 @@ subdir('poly2tri-c/refine')
+ subdir('poly2tri-c/render')
+ 
+ 
+-libpoly2tri_c = static_library('poly2tri-c',
+-  link_with: [ libp2tc, libp2tc_refine, libp2tc_render, ],
++libpoly2tri_c = static_library('poly2tri-c', 'what.c',
++  link_with: [ libp2tc, libp2tc_refine, libp2tc_render]
+ )
+ 
+-
+ poly2tri_c = declare_dependency(
+   include_directories: [ rootInclude, ],
+   link_with: [ libpoly2tri_c, ],
+diff --git a/subprojects/poly2tri-c/poly2tri-c/refine/cdt.h b/subprojects/poly2tri-c/poly2tri-c/refine/cdt.h
+index 23455a66c..540c052d9 100644
+--- a/subprojects/poly2tri-c/poly2tri-c/refine/cdt.h
++++ b/subprojects/poly2tri-c/poly2tri-c/refine/cdt.h
+@@ -33,7 +33,7 @@
+ #ifndef __P2TC_REFINE_CDT_H__
+ #define __P2TC_REFINE_CDT_H__
+ 
+-#include <poly2tri-c/p2t/poly2tri.h>
++#include "../p2t/poly2tri.h"
+ #include "mesh.h"
+ #include "pslg.h"
