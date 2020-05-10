@@ -28,6 +28,8 @@ git clone https://gitlab.com/gnutls/gnutls.git
 git clone https://git.savannah.gnu.org/git/autogen.git
 git clone https://github.com/ivmai/bdwgc.git
 git clone https://github.com/gnutls/nettle.git
+git clone https://github.com/p11-glue/p11-kit.git
+git clone https://gitlab.com/gnutls/libtasn1.git
 
 curl http://ftp.gnu.org/gnu/autogen/rel5.18.16/autogen-5.18.16.tar.xz -o autogen.xz && tar xf autogen.xz && rm autogen.xz && mv autogen-5* autogen
 curl https://gmplib.org/download/gmp/gmp-6.2.0.tar.xz -o gmp.xz && tar xf gmp.xz && rm gmp.xz && mv gmp-6* gmp
@@ -64,7 +66,11 @@ cd ~/autogen && autoreconf -vfi && CC=clang ./configure ac_cv_func_utimensat=no 
 # nettle requires MacTeX http://tug.org/cgi-bin/mactex-download/MacTeX.pkg
 cd ~/nettle && export PATH=/Library/TeX/texbin:$PATH && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig ./configure --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk --with-libintl-prefix=/opt/local/lib --disable-silent-rules && make -j8 && sudo make install
 
-cd libev4 && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig sh autogen.sh  --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig ./configure  --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib && make -j8 && sudo make install
+cd ~/libev4 && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig sh autogen.sh  --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig ./configure  --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib && make -j8 && sudo make install
+
+cd ~/libtasn1 && 
+
+cd ~/p11-kit && 
 
 cd ~/gnutls && ./bootstrap && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig ./configure  --with-included-libtasn1 --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib && make -j8 && sudo make install
 
