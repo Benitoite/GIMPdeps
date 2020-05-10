@@ -54,7 +54,7 @@ cd ~/guile && git checkout v2.3.0 && autoreconf -vfi && CC=clang CXX=clang++ CFL
 
 cd ~/libunistring && autoreconf -vfi && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig ./configure  --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib && make -j8 && sudo make install
 
-cd ~/autogen && autoreconf -vfi && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig ./configure  --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib && make -j8 && sudo make install
+cd ~/autogen && autoreconf -vfi && CC=clang ./configure ac_cv_func_utimensat=no --disable-debug --disable-silent-rules --disable-dependency-tracking --prefix=/opt/local && sed -i.bak "s/-Werror//" Makefile && sed -i.bak "s/-Werror//" autoopts/Makefile && make -j8 && sudo make install
 
 cd ~/gnutls && 
 
