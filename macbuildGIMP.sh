@@ -4,7 +4,10 @@
 # Builds RawTherapee on macOS 10.15.4 / Xcode 11.4.1
 # Depends on libraries built by https://github.com/Benitoite/RTdeps/blob/master/macbuildRT.sh
 #
+#
 # Created by Richard Barber on 05/09/20.
+#
+# PREREQUISITE: nettle requires MacTeX http://tug.org/cgi-bin/mactex-download/MacTeX.pkg
 #
 # GIT DEPENDENCIES
 
@@ -24,6 +27,7 @@ git clone https://gitlab.gnome.org/GNOME/glib-networking.git
 git clone https://gitlab.com/gnutls/gnutls.git
 git clone https://git.savannah.gnu.org/git/autogen.git
 git clone https://github.com/ivmai/bdwgc.git
+git clone https://github.com/gnutls/nettle.git
 
 curl http://ftp.gnu.org/gnu/autogen/rel5.18.16/autogen-5.18.16.tar.xz -o autogen.xz && tar xf autogen.xz && rm autogen.xz && mv autogen-5* autogen
 curl https://gmplib.org/download/gmp/gmp-6.2.0.tar.xz -o gmp.xz && tar xf gmp.xz && rm gmp.xz && mv gmp-6* gmp
@@ -56,13 +60,16 @@ cd ~/libunistring && autoreconf -vfi && CC=clang CXX=clang++ CFLAGS="-arch x86_6
 
 cd ~/autogen && autoreconf -vfi && CC=clang ./configure ac_cv_func_utimensat=no --disable-debug --disable-silent-rules --disable-dependency-tracking --prefix=/opt/local && sed -i.bak "s/-Werror//" Makefile && sed -i.bak "s/-Werror//" autoopts/Makefile && make -j8 && sudo make install
 
-cd ~/gnutls && 
+# nettle requires MacTeX http://tug.org/cgi-bin/mactex-download/MacTeX.pkg
+cd ~/nettle && 
+
+cd ~/gnutls && ./bootstrap && 
 
 cd ~/glib-networking && 
 
 
 # GIMP
 
- CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig sh autogen.sh --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib && autoreconf -vfi && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig ./configure  --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib && 
+cd ~/gimp && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig sh autogen.sh --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib && autoreconf -vfi && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig ./configure  --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib && ### TO BE CONTINUED...
 
 # END OF SCRIPT
