@@ -54,6 +54,7 @@ git clone https://github.com/uclouvain/openjpeg.git
 git clone https://anongit.freedesktop.org/git/poppler/poppler-data.git
 git clone https://github.com/GNOME/gjs.git
 git clone https://github.com/ptomato/mozjs.git
+git clone https://luajit.org/git/luajit-2.0.git
 
 curl http://ftp.gnu.org/gnu/autogen/rel5.18.16/autogen-5.18.16.tar.xz -o autogen.xz && tar xf autogen.xz && rm autogen.xz && mv autogen-5* autogen
 curl https://gmplib.org/download/gmp/gmp-6.2.0.tar.xz -o gmp.xz && tar xf gmp.xz && rm gmp.xz && mv gmp-6* gmp
@@ -168,8 +169,10 @@ cd ~/mozjs/js/src && mkdir obj && cd obj && sed -i.bak "s:-Wl,-executable_path,$
 
 cd ~/gjs && LD=ld CC=/usr/bin/clang CXX=/usr/bin/clang++ LIBRARY_PATH=/opt/local/lib meson setup  --cross-file=~/maccross  --prefix=/opt/local --buildtype=release  -Dintrospection=disabled --layout=mirror --default-library=both -Dinstalled_tests=false -Dskip_gtk_tests=true -Dskip_dbus_tests=true -Dcairo=disabled _build . && ninja -C _build && sudo ninja -C _build install
 
+cd ~/luajit-2.0 && MACOSX_DEPLOYMENT_TARGET=10.9 make PREFIX=/opt/local && sudo make install
+
 # GIMP
 
-cd ~/gimp && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig sh autogen.sh --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib && autoreconf -vfi && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig APPSTREAM_GLIB_LIBS="-lappstream-glib -L/opt/local/lib" APPSTREAM_GLIB_CFLAGS="-I/opt/local/include" ./configure  --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib --with-bug-report-url=https://discuss.pixls.us/c/software/gimp && ### TO BE CONTINUED...
+cd ~/gimp && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig sh autogen.sh --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib && autoreconf -vfi && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig APPSTREAM_GLIB_LIBS="-lappstream-glib -L/opt/local/lib" APPSTREAM_GLIB_CFLAGS="-I/opt/local/include" ./configure  --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib --with-bug-report-url=https://discuss.pixls.us/c/software/gimp && make -j8 && sudo make install ### TO BE CONTINUED...
 
 # END OF SCRIPT
