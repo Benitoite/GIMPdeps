@@ -43,6 +43,8 @@ git clone https://dev.gnupg.org/source/libksba.git
 git clone https://dev.gnupg.org/source/npth.git
 git clone https://github.com/rpm-software-management/popt.git
 git clone https://github.com/yaml/libyaml.git
+git clone https://gitlab.gnome.org/GNOME/gexiv2.git
+git clone https://gitlab.gnome.org/GNOME/vala.git
 
 curl http://ftp.gnu.org/gnu/autogen/rel5.18.16/autogen-5.18.16.tar.xz -o autogen.xz && tar xf autogen.xz && rm autogen.xz && mv autogen-5* autogen
 curl https://gmplib.org/download/gmp/gmp-6.2.0.tar.xz -o gmp.xz && tar xf gmp.xz && rm gmp.xz && mv gmp-6* gmp
@@ -53,6 +55,7 @@ curl https://gnupg.org/ftp/gcrypt/gnupg/gnupg-2.2.20.tar.bz2 -o gnupg.bz2 && tar
 curl https://astron.com/pub/file/file-5.38.tar.gz -o file-5.gz && gunzip file-5.gz && cd file-5 && tar xf file-5 && rm file-5 && mv file-5* file-5
 curl https://download.oracle.com/berkeley-db/db-4.8.30.tar.gz -o db4.gz && gunzip db4.gz && tar xf db4 && rm db4 && mv db-4* db-4
 curl https://www.lua.org/ftp/lua-5.3.5.tar.gz -o lua.gz && gunzip lua.gz && tar xf lua && rm lua && mv lua-5* lua-5
+curl -L https://download.gnome.org/sources/vala/0.48/vala-0.48.5.tar.xz -o vala.xz && tar xf vala.xz && rm vala.xz && mv vala-0* vala-0
 
 # Prepare dependencies
 
@@ -127,6 +130,10 @@ cd ~/rpm && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 
 cd ~/libyaml && ./bootstrap && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig ./configure  --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib --disable-static  --disable-silent-rules && make -j8 && sudo make install
 
 cd ~/appstream-glib && LD=ld CC=/usr/bin/clang CXX=/usr/bin/clang++ LIBRARY_PATH=/opt/local/lib meson setup --cross-file=~/maccross  --prefix=/opt/local --buildtype=release   --layout=mirror --default-library=both -D stemmer=false -D instrospection=false _build . && ninja -C _build && sudo ninja -C _build install
+
+cd ~/vala-0 && autoreconf -vfi && 
+
+cd ~/gexiv2 && LD=ld CC=/usr/bin/clang CXX=/usr/bin/clang++ LIBRARY_PATH=/opt/local/lib meson setup --cross-file=~/maccross  --prefix=/opt/local --buildtype=release --layout=mirror --default-library=both -D instrospection=false _build . && ninja -C _build && sudo ninja -C _build install
 
 # GIMP
 
