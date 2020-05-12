@@ -45,6 +45,15 @@ git clone https://github.com/rpm-software-management/popt.git
 git clone https://github.com/yaml/libyaml.git
 git clone https://gitlab.gnome.org/GNOME/gexiv2.git
 git clone https://gitlab.gnome.org/GNOME/vala.git
+git clone https://gitlab.com/graphviz/graphviz.git
+git clone https://github.com/mypaint/libmypaint.git
+git clone https://github.com/json-c/json-c.git
+git clone https://github.com/mypaint/mypaint-brushes.git
+git clone https://github.com/freedesktop/poppler.git
+git clone https://github.com/uclouvain/openjpeg.git
+git clone https://anongit.freedesktop.org/git/poppler/poppler-data.git
+git clone https://github.com/GNOME/gjs.git
+git clone https://github.com/mozilla/gecko-dev.git
 
 curl http://ftp.gnu.org/gnu/autogen/rel5.18.16/autogen-5.18.16.tar.xz -o autogen.xz && tar xf autogen.xz && rm autogen.xz && mv autogen-5* autogen
 curl https://gmplib.org/download/gmp/gmp-6.2.0.tar.xz -o gmp.xz && tar xf gmp.xz && rm gmp.xz && mv gmp-6* gmp
@@ -60,6 +69,9 @@ curl -L https://download.gnome.org/sources/vala/0.48/vala-0.48.5.tar.xz -o vala.
 # Prepare dependencies
 
 sudo install_name_tool -change libfreetype.6.dylib /opt/local/lib/libfreetype.6.dylib  /opt/local/bin/rsvg-convert
+sudo install_name_tool -change libz.1.dylib /opt/local/lib/libz.1.dylib /opt/local/lib/libfreetype.6.dylib
+sudo install_name_tool -change libz.1.dylib /opt/local/lib/libz.1.dylib /opt/local/lib/libfontconfig.1.dylib
+sudo install_name_tool -change libz.1.dylib /opt/local/lib/libz.1.dylib /opt/local/lib/libcairo.2.dylib
 
 # Build tools and libraries
 
@@ -131,12 +143,30 @@ cd ~/libyaml && ./bootstrap && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacos
 
 cd ~/appstream-glib && LD=ld CC=/usr/bin/clang CXX=/usr/bin/clang++ LIBRARY_PATH=/opt/local/lib meson setup --cross-file=~/maccross  --prefix=/opt/local --buildtype=release   --layout=mirror --default-library=both -D stemmer=false -D instrospection=false _build . && ninja -C _build && sudo ninja -C _build install
 
-cd ~/vala-0 && autoreconf -vfi && 
+cd ~/graphviz &&  CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig LUA_CFLAGS=-I/opt/local/include LUA_LIBS=-L/opt/local/lib sh autogen.sh  --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig LUA_CFLAGS=-I/opt/local/include LUA_LIBS=-L/opt/local/lib ./configure  --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib --disable-static  --disable-silent-rules && make -j8 && sudo make install && make -j8 && sudo make install
+
+cd ~/vala-0 && autoreconf -vfi &&  CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig LUA_CFLAGS=-I/opt/local/include LUA_LIBS=-L/opt/local/lib ./configure  --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib --disable-static  --disable-silent-rules && make -j8 && sudo make install && make -j8 && sudo make install
 
 cd ~/gexiv2 && LD=ld CC=/usr/bin/clang CXX=/usr/bin/clang++ LIBRARY_PATH=/opt/local/lib meson setup --cross-file=~/maccross  --prefix=/opt/local --buildtype=release --layout=mirror --default-library=both -D instrospection=false _build . && ninja -C _build && sudo ninja -C _build install
 
+cd ~/json-c && mkdir build && cd build && DYLIB_CURRENT_VERSION=8.0.1 DYLIB_COMPATIBILITY_VERSION=7.0.0 cmake .. -DCMAKE_OSX_SYSROOT:PATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.9 -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/opt/local && make -j8 && sudo make install
+
+cd ~/libmypaint && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig LUA_CFLAGS=-I/opt/local/include LUA_LIBS=-L/opt/local/lib sh autogen.sh  --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig LUA_CFLAGS=-I/opt/local/include LUA_LIBS=-L/opt/local/lib ./configure  --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib --disable-static  --disable-silent-rules --disable-introspection --enable-openmp && make -j8 && sudo make install
+
+cd ~/mypaint-brushes && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig LUA_CFLAGS=-I/opt/local/include LUA_LIBS=-L/opt/local/lib sh autogen.sh  --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig LUA_CFLAGS=-I/opt/local/include LUA_LIBS=-L/opt/local/lib ./configure  --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib --disable-static  --disable-silent-rules --disable-introspection --enable-openmp && make -j8 && sudo make install
+
+cd ~/openjpeg && mkdir build && cd build && DYLIB_CURRENT_VERSION=8.0.1 DYLIB_COMPATIBILITY_VERSION=7.0.0 cmake .. -DCMAKE_OSX_SYSROOT:PATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.9 -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/opt/local && make -j8 && sudo make install
+
+cd ~/poppler && mkdir build && cd build && DYLIB_CURRENT_VERSION=8.0.1 DYLIB_COMPATIBILITY_VERSION=7.0.0 cmake .. -DCMAKE_OSX_SYSROOT:PATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.9 -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/opt/local -DICONV_LIBRARIES=/opt/local/lib/libiconv.dylib && make -j8 || install_name_tool -add_rpath /opt/local/lib libpoppler.93.0.0.dylib && make -j8 && sudo make install
+
+cd ~/poppler-data && mkdir build && cd build && DYLIB_CURRENT_VERSION=8.0.1 DYLIB_COMPATIBILITY_VERSION=7.0.0 cmake .. -DCMAKE_OSX_SYSROOT:PATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.9 -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/opt/local -DICONV_LIBRARIES=/opt/local/lib/libiconv.dylib && make -j8 && sudo make install
+
+cd ~/gecko-dev/js/src && 
+
+cd ~/gjs && LD=ld CC=/usr/bin/clang CXX=/usr/bin/clang++ LIBRARY_PATH=/opt/local/lib meson setup --cross-file=~/maccross  --prefix=/opt/local --buildtype=release --layout=mirror --default-library=both -D instrospection=false _build . && ninja -C _build && sudo ninja -C _build install
+
 # GIMP
 
-cd ~/gimp && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig sh autogen.sh --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib && autoreconf -vfi && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig APPSTREAM_GLIB_LIBS="-lappstream-glib -L/opt/local/lib" APPSTREAM_GLIB_CFLAGS="-I/opt/local/include" ./configure  --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib && ### TO BE CONTINUED...
+cd ~/gimp && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig sh autogen.sh --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib && autoreconf -vfi && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig APPSTREAM_GLIB_LIBS="-lappstream-glib -L/opt/local/lib" APPSTREAM_GLIB_CFLAGS="-I/opt/local/include" ./configure  --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib --with-bug-report-url=https://discuss.pixls.us/c/software/gimp && ### TO BE CONTINUED...
 
 # END OF SCRIPT
