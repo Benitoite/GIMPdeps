@@ -8,6 +8,7 @@
 # Created by Richard Barber on 05/09/20.
 #
 # PREREQUISITE: nettle requires MacTeX http://tug.org/cgi-bin/mactex-download/MacTeX.pkg
+# PREREQUISITE: GIMP requires PyGTK2 @ https://sourceforge.net/projects/macpkg/files/PyGTK/2.24.0/
 #
 # GIT DEPENDENCIES
 
@@ -66,6 +67,7 @@ curl https://astron.com/pub/file/file-5.38.tar.gz -o file-5.gz && gunzip file-5.
 curl https://download.oracle.com/berkeley-db/db-4.8.30.tar.gz -o db4.gz && gunzip db4.gz && tar xf db4 && rm db4 && mv db-4* db-4
 curl https://www.lua.org/ftp/lua-5.3.5.tar.gz -o lua.gz && gunzip lua.gz && tar xf lua && rm lua && mv lua-5* lua-5
 curl -L https://download.gnome.org/sources/vala/0.48/vala-0.48.5.tar.xz -o vala.xz && tar xf vala.xz && rm vala.xz && mv vala-0* vala-0
+curl http://ftp.gnome.org/pub/GNOME/sources/pygtk/2.24/pygtk-2.24.0.tar.bz2 -o pygtk.bz2 && tar xvfj pygtk.bz2 && rm pygtk.bz2
 
 # Prepare dependencies
 
@@ -171,8 +173,12 @@ cd ~/gjs && LD=ld CC=/usr/bin/clang CXX=/usr/bin/clang++ LIBRARY_PATH=/opt/local
 
 cd ~/luajit-2.0 && MACOSX_DEPLOYMENT_TARGET=10.9 make PREFIX=/opt/local && sudo make install
 
+cd ~/pygobject && git checkout PYGOBJECT_2_28_7 &&  autoreconf -vfi && CC=clang CXX=clang++ CFLAGS="-std=c11 -I/opt/local/lib/glib-2.0/include -I/opt/local/include/glib-2.0 -arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" GLIB_CFLAGS=-I/opt/local/include/glib-2.0 GIO_CFLAGS=-I/opt/gtk/include/gio-unix-2.0/gio GIOUNIX_CFLAGS=-I/opt/gtk/include/gio-unix-2.0/gio PYTHON=python PKG_CONFIG_PATH=/opt/local/lib/pkgconfig LUA_CFLAGS=-I/opt/local/include LUA_LIBS=-L/opt/local/lib ./configure --disable-glibtest --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib --disable-static --disable-introspection && make -j8 && sudo make install
+
+cd ~/pygtk-2.24.0 && echo "AC_CONFIG_MACRO_DIRS([m4])" >> configure.ac && autoreconf -vfi && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python2 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig LUA_CFLAGS=-I/opt/local/include LUA_LIBS=-L/opt/local/lib ./configure  --prefix=/opt/local --disable-glibtest --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib --disable-static  --disable-silent-rules && make -j8 && sudo make install
+
 # GIMP
 
-cd ~/gimp && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig sh autogen.sh --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib && autoreconf -vfi && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python3 PKG_CONFIG_PATH=/opt/local/lib/pkgconfig APPSTREAM_GLIB_LIBS="-lappstream-glib -L/opt/local/lib" APPSTREAM_GLIB_CFLAGS="-I/opt/local/include" ./configure  --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib --with-bug-report-url=https://discuss.pixls.us/c/software/gimp && make -j8 && sudo make install ### TO BE CONTINUED...
+cd ~/gimp && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python PKG_CONFIG_PATH=/opt/local/lib/pkgconfig sh autogen.sh --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib && autoreconf -vfi && CC=clang CXX=clang++ CFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" LDFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -L/opt/local/lib -Wl,-rpath -Wl,/opt/local/lib" CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.9 -I/opt/local/include" PYTHON=python PKG_CONFIG_PATH=/opt/local/lib/pkgconfig APPSTREAM_GLIB_LIBS="-lappstream-glib -L/opt/local/lib" APPSTREAM_GLIB_CFLAGS="-I/opt/local/include" ./configure  --disable-vector-icons --prefix=/opt/local --with-sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk  --with-libintl-prefix=/opt/local/lib --with-bug-report-url=https://discuss.pixls.us/c/software/gimp && make -j8 && sudo make install ### TO BE CONTINUED...
 
 # END OF SCRIPT
